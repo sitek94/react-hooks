@@ -8,7 +8,7 @@ function useLocalStorageState(key, initialState) {
     () => {
       try {
         const stateJson = window.localStorage.getItem(key)
-        return JSON.parse(stateJson)
+        return JSON.parse(stateJson) ?? initialState
       } catch {
         return initialState
       }
