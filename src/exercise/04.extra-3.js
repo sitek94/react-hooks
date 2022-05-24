@@ -53,12 +53,12 @@ function Game() {
       return
     }
 
+    const historyCopy = history.slice(0, currentStep + 1)
     const squaresCopy = [...currentSquares]
     squaresCopy[square] = nextValue
 
     setCurrentStep(step => step + 1)
-    const historyCopy = history.slice(0, currentStep + 1)
-    setHistory(historyCopy.concat([squaresCopy]))
+    setHistory([...historyCopy, squaresCopy])
   }
 
   function restart() {
@@ -67,35 +67,30 @@ function Game() {
   }
 
   const moves = history.map((_, step) => {
-    const isCurrent = currentStep === step
-    const isGameStart = step === 0
-    let desc = isGameStart ? 'Go to game start' : `Go to move #${step}`
-    if (isCurrent) desc += ' (current)'
+    const desc = step === 0 ? 'Go to game start' : `Go to move #${step}`
+    const isCurrentStep = currentStep === step
     return (
       <li key={step}>
-        <button onClick={() => setCurrentStep(step)} disabled={isCurrent}>
-          {desc}
+        <button onClick={() => setCurrentStep(step)} disabled={isCurrentStep}>
+          {desc} {isCurrentStep ? '(current)' : null}
         </button>
       </li>
     )
   })
 
   return (
-    <>
-      <h1>{currentStep}</h1>
-      <div className="game">
-        <div className="game-board">
-          <Board onClick={selectSquare} squares={currentSquares} />
-          <button className="restart" onClick={restart}>
-            restart
-          </button>
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
+    <div className="game">
+      <div className="game-board">
+        <Board onClick={selectSquare} squares={currentSquares} />
+        <button className="restart" onClick={restart}>
+          restart
+        </button>
       </div>
-    </>
+      <div className="game-info">
+        <div>{status}</div>
+        <ol>{moves}</ol>
+      </div>
+    </div>
   )
 }
 
