@@ -54,10 +54,7 @@ function PokemonInfo({pokemonName}) {
 
 // eslint-disable-next-line no-unused-vars
 class MyErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {error: null}
-  }
+  state = {error: null}
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
@@ -70,9 +67,10 @@ class MyErrorBoundary extends React.Component {
   }
 
   render() {
-    if (this.state.error) {
+    const {error} = this.state
+    if (error) {
       // You can render any custom fallback UI
-      return <ErrorMessage error={this.state.error} />
+      return this.props.FallbackComponent(error)
     }
 
     return this.props.children
