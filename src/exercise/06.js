@@ -103,6 +103,7 @@ function App() {
       <div className="pokemon-info">
         <ErrorBoundary
           onReset={() => setPokemonName('')}
+          resetKeys={[pokemonName]}
           FallbackComponent={ErrorMessage}
         >
           <PokemonInfo pokemonName={pokemonName} />
