@@ -10,47 +10,45 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  const [pokemon, setPokemon] = React.useState(null)
-  const [status, setStatus] = React.useState('idle')
-  const [error, setError] = React.useState(null)
+  const [state, setState] = React.useState({status: 'idle'})
 
   React.useEffect(() => {
     if (!pokemonName) {
       return
     }
-    setPokemon(null)
-    setStatus('pending')
+
+    setState({status: 'pending'})
     fetchPokemon(pokemonName)
       .then(pokemon => {
-        setPokemon(pokemon)
-        setStatus('resolved')
+        setState({status: 'resolved', pokemon})
       })
       .catch(error => {
-        setError('rejected')
-        setError(error)
+        setState({status: 'rejected', error})
       })
   }, [pokemonName])
 
-  if (status === 'idle') {
+  if (state.status === 'idle') {
     return 'Submit a pokemon'
   }
 
-  if (status === 'pending') {
+  if (state.status === 'pending') {
     return <PokemonInfoFallback name={pokemonName} />
   }
 
-  if (status === 'resolved') {
-    return <PokemonDataView pokemon={pokemon} />
+  if (state.status === 'resolved') {
+    return <PokemonDataView pokemon={state.pokemon} />
   }
 
-  if (status === 'rejected') {
+  if (state.state === 'rejected') {
     return (
       <div role="alert">
         There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+        <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
       </div>
     )
   }
+
+  throw new Error('This should not be possible')
 }
 
 function App() {
