@@ -10,7 +10,12 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  const [state, setState] = React.useState({status: 'idle'})
+  const [state, setState] = React.useState({
+    status: 'idle',
+    pokemon: null,
+    error: null,
+  })
+  const {status, pokemon, error} = state
 
   React.useEffect(() => {
     if (!pokemonName) {
@@ -27,23 +32,23 @@ function PokemonInfo({pokemonName}) {
       })
   }, [pokemonName])
 
-  if (state.status === 'idle') {
+  if (status === 'idle') {
     return 'Submit a pokemon'
   }
 
-  if (state.status === 'pending') {
+  if (status === 'pending') {
     return <PokemonInfoFallback name={pokemonName} />
   }
 
-  if (state.status === 'resolved') {
-    return <PokemonDataView pokemon={state.pokemon} />
+  if (status === 'resolved') {
+    return <PokemonDataView pokemon={pokemon} />
   }
 
-  if (state.state === 'rejected') {
+  if (status === 'rejected') {
     return (
       <div role="alert">
         There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
+        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
       </div>
     )
   }
