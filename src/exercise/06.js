@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
 import {
   PokemonForm,
   fetchPokemon,
@@ -51,7 +52,8 @@ function PokemonInfo({pokemonName}) {
   throw new Error('This should not be possible')
 }
 
-class ErrorBoundary extends React.Component {
+// eslint-disable-next-line no-unused-vars
+class MyErrorBoundary extends React.Component {
   constructor(props) {
     super(props)
     this.state = {error: null}
@@ -70,16 +72,20 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) {
       // You can render any custom fallback UI
-      return (
-        <div role="alert">
-          There was an error:{' '}
-          <pre style={{whiteSpace: 'normal'}}>{this.state.error.message}</pre>
-        </div>
-      )
+      return <ErrorMessage error={this.state.error} />
     }
 
     return this.props.children
   }
+}
+
+function ErrorMessage({error}) {
+  return (
+    <div role="alert">
+      There was an error:{' '}
+      <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+    </div>
+  )
 }
 
 function App() {
@@ -94,7 +100,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary key={pokemonName}>
+        <ErrorBoundary key={pokemonName} FallbackComponent={ErrorMessage}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
